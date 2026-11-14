@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskora | Productivity Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="./logo.png?v=2">
+</head>
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+        <div class="brand-logo">
+            <div class="brand-icon">
+                <svg viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" rx="15" fill="url(#grad)"/>
+                    <path d="M14 15H34M14 24H27M14 33H23" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+                    <path d="M29 30L33 34L40 25" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="grad" x1="0" y1="0" x2="48" y2="48">
+                            <stop stop-color="#9672FF"/>
+                            <stop offset="1" stop-color="#6236D9"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <span class="brand-name">Taskora<span>.</span></span>
+        </div>
+
+        <p class="side-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <button class="nav-link active" data-page="dashboard" type="button">▦ <span>Dashboard</span></button>
+            <button class="nav-link" data-page="tasks" type="button">☑ <span>My Tasks</span></button>
+            <button class="nav-link" data-page="calendar" type="button">▦ <span>Calendar</span></button>
+            <button class="nav-link" data-page="analytics" type="button">▥ <span>Analytics</span></button>
+            <button class="nav-link" data-page="history" type="button">◷ <span>History</span></button>
+            <button class="nav-link" data-page="backup" type="button">↓ <span>Backup & Restore</span></button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button id="theme" class="nav-link" type="button">☼ <span>Theme</span></button>
+            <p class="sidebar-version">TASKORA • VERSION 1.0</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1 id="pageHeading">Dashboard</h1>
+                <p id="todayLabel"></p>
+            </div>
+            <div class="topbar-right">
+                <div class="user-avatar">T</div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <section class="page active" id="dashboard">
+            <div class="welcome-section">
+                <div>
+                    <p class="eyebrow">YOUR PRODUCTIVITY SPACE</p>
+                    <h2>Welcome back 👋</h2>
+                    <p>Plan your day, focus on your goals and get things done.</p>
+                </div>
+                <button class="primary-button" data-goto="tasks" type="button">+ Create Task</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple">▦</div>
+                    <p>Total Tasks</p>
+                    <h2 id="totalTasks">0</h2>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <p>Completed</p>
+                    <h2 id="completedTasks">0</h2>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">◷</div>
+                    <p>Pending</p>
+                    <h2 id="pendingTasks">0</h2>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">％</div>
+                    <p>Completion Rate</p>
+                    <h2 id="completionRate">0%</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="content-card">
+                    <div class="section-header">
+                        <div>
+                            <h3>Recent Tasks</h3>
+                            <p>Your latest tasks at a glance</p>
+                        </div>
+                        <button class="text-button" data-goto="tasks" type="button">View All →</button>
+                    </div>
+                    <div id="recentTasksList"></div>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-header">
+                        <div>
+                            <h3>Productivity Overview</h3>
+                            <p>Your overall progress</p>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <span>Completion</span>
+                        <strong id="dashboardProgressText">0%</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="dashboardProgressBar"></div>
+                    </div>
+                    <p class="muted-text" id="dashboardMessage">Start adding tasks to track your productivity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MY TASKS -->
+        <section class="page" id="tasks">
+            <div class="page-intro">
+                <h2>My Tasks</h2>
+                <p>Create, organize and manage your daily tasks.</p>
+            </div>
+
+            <div class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h3>Create a New Task</h3>
+                        <p>Add a task to your workspace</p>
+                    </div>
+                </div>
+
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" placeholder="What do you need to do?" required maxlength="120">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" rows="3" placeholder="Add some details (optional)"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskDate">Due Date</label>
+                            <input type="date" id="taskDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskPriority">Priority</label>
+                            <select id="taskPriority">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskCategory">Category</label>
+                            <select id="taskCategory">
+                                <option value="Study">Study</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Work">Work</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="primary-button" type="submit">+ Add Task</button>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h3>All Tasks</h3>
+                        <p id="taskCount">0 tasks</p>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <input type="search" id="searchInput" placeholder="Search tasks...">
+                    <select id="categoryFilter">
+                        <option value="All">All Categories</option>
+                        <option value="Study">Study</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Work">Work</option>
+                    </select>
+                    <select id="priorityFilter">
+                        <option value="All">All Priorities</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="All">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                </div>
+
+                <div id="taskList"></div>
+            </div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section class="page" id="calendar">
+            <div class="page-intro">
+                <h2>Calendar</h2>
+                <p>Keep track of your tasks and deadlines.</p>
+            </div>
+
+            <div class="content-card">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="calendar-nav" type="button">←</button>
+                    <h3 id="calendarMonth">Month Year</h3>
+                    <button id="nextMonth" class="calendar-nav" type="button">→</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="calendar-legend">
+                    <span><i class="legend-dot pending-dot"></i> Pending</span>
+                    <span><i class="legend-dot completed-dot"></i> Completed</span>
+                    <span><i class="legend-dot today-dot"></i> Today</span>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3 id="selectedDateHeading">Selected Date Tasks</h3>
+                <div id="selectedDateTasks"></div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section class="page" id="analytics">
+            <div class="page-intro">
+                <h2>Analytics</h2>
+                <p>Understand your productivity through task statistics.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p>Total Tasks</p>
+                    <h2 id="analyticsTotal">0</h2>
+                </div>
+                <div class="stat-card">
+                    <p>Completion Rate</p>
+                    <h2 id="analyticsRate">0%</h2>
+                </div>
+                <div class="stat-card">
+                    <p>High Priority Pending</p>
+                    <h2 id="analyticsHigh">0</h2>
+                </div>
+                <div class="stat-card">
+                    <p>Overdue Tasks</p>
+                    <h2 id="analyticsOverdue">0</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="content-card">
+                    <h3>Tasks by Category</h3>
+                    <div id="categoryChart"></div>
+                </div>
+                <div class="content-card">
+                    <h3>Tasks by Priority</h3>
+                    <div id="priorityChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="page" id="history">
+            <div class="page-intro">
+                <h2>Task History</h2>
+                <p>Your completed task records.</p>
+            </div>
+
+            <div class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h3>Completed Tasks</h3>
+                        <p>Previously completed tasks stay recorded here.</p>
+                    </div>
+                </div>
+                <div id="historyList"></div>
+            </div>
+        </section>
+
+        <!-- BACKUP -->
+        <section class="page" id="backup">
+            <div class="page-intro">
+                <h2>Backup & Restore</h2>
+                <p>Keep your Taskora data safe.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Automatic File Sync</h3>
+                <p class="muted-text">Connect a JSON file to automatically save your Taskora data.</p>
+                <button type="button" class="primary-button" id="autoSaveConnect">Connect Auto-Save File</button>
+                <p id="autoSaveStatus" class="backup-status">Auto-Save File: Not connected</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Export Backup</h3>
+                <p class="muted-text">Download your tasks and history as a JSON file.</p>
+                <button type="button" class="primary-button" id="exportBackup">↓ Export Backup</button>
+            </div>
+
+            <div class="content-card">
+                <h3>Import Backup</h3>
+                <p class="muted-text">Restore your data from a previous Taskora backup.</p>
+                <input type="file" id="importBackup" accept=".json,application/json">
+                <button type="button" class="primary-button" id="importBackupButton">↑ Import Backup</button>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
